@@ -21,7 +21,6 @@ dist/
 .agents/
 .claude/
 .opencode/
-skills-lock.json
 
 # ── Tooling / test artifacts ──
 .playwright/
