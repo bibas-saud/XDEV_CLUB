@@ -1,0 +1,370 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Archivo Variable", "Geist Variable", ui-sans-serif, sans-serif;
+
+  /* Motion — ease-out for entrances, ease-in-out for on-screen movement */
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* Public site — "Studio Index": monochrome + surgical cobalt */
+  --color-signal: #2038e6;
+  --color-signal-soft: #2038e614;
+  --color-paper: #f4f4f2;
+
+  --color-background: #fafafa;
+  --color-foreground: #09090b;
+  --color-card: #ffffff;
+  --color-card-foreground: #09090b;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #09090b;
+
+  --color-primary: #09090b;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #18181b;
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #09090b;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #16a34a;
+  --color-success-foreground: #ffffff;
+
+  --radius-lg: 0.625rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.375rem;
+}
+
+.dark {
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+  --color-card: #111113;
+  --color-card-foreground: #fafafa;
+  --color-muted: #1c1c1f;
+  --color-muted-foreground: #a1a1aa;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #fafafa;
+
+  --color-primary: #fafafa;
+  --color-primary-foreground: #09090b;
+  --color-secondary: #1c1c1f;
+  --color-secondary-foreground: #fafafa;
+  --color-accent: #1c1c1f;
+  --color-accent-foreground: #fafafa;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #22c55e;
+  --color-success-foreground: #09090b;
+
+  --color-signal: #4d63ff;
+  --color-signal-soft: #4d63ff14;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  ::selection {
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 3px;
+  }
+
+  /* ── Public site: Studio Index ───────────────────────────────── */
+
+  /* Display type — expanded grotesque, tight and engineered. */
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 118;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    line-height: 0.94;
+    font-weight: 640;
+  }
+  .display-tight {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 112;
+    letter-spacing: -0.03em;
+    line-height: 0.96;
+    font-weight: 620;
+  }
+
+  /* Editorial serif accent — italic Fraunces for manifesto keywords. */
+  .font-editorial-serif {
+    font-family: "Fraunces Variable", Georgia, serif;
+    font-style: italic;
+    font-weight: 460;
+    letter-spacing: -0.015em;
+    text-transform: none;
+  }
+
+  /* Outlined (stroke) display text for marquee alternation. */
+  .text-stroke {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-foreground);
+  }
+
+  /* Film grain — barely-there; keeps large flat fields alive. */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  /* Marquee — constant motion is the one place linear belongs. */
+  .marquee-track {
+    animation: marquee var(--marquee-duration, 42s) linear infinite;
+  }
+  .marquee-track[data-direction="right"] {
+    animation-direction: reverse;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+
+  /* Edge fade for marquees and horizontal scrollers. */
+  .mask-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+
+  /* Underline sweep for text links. */
+  .link-sweep {
+    position: relative;
+  }
+  .link-sweep::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 250ms var(--ease-out-quart);
+  }
+  .link-sweep:hover::after,
+  .link-sweep:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Arrow-link — the agency CTA: mono label + translating arrow. */
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .arrow-link .arrow-box {
+    display: inline-grid;
+    place-items: center;
+    transition:
+      background-color 200ms var(--ease-out-quart),
+      color 200ms var(--ease-out-quart),
+      transform 300ms var(--ease-out-expo);
+  }
+  .arrow-link:hover .arrow-box,
+  .arrow-link:focus-visible .arrow-box {
+    transform: translate(2px, -2px);
+  }
+
+  /* Hide the native cursor only where the custom one takes over. */
+  @media (hover: hover) and (pointer: fine) {
+    .cursor-none-root,
+    .cursor-none-root a,
+    .cursor-none-root button {
+      cursor: none;
+    }
+  }
+
+  /* ── Showcase ring — cipher-style orbit carousel ────────────────
+     Cards rest in full color. While one card is intentionally hovered
+     (JS-gated: a card sliding under a still cursor does NOT count),
+     that card stays color and gently scales; the others turn B&W. */
+  .showcase-stage .showcase-inner {
+    transition:
+      transform 450ms var(--ease-out-expo),
+      filter 450ms var(--ease-out-quart);
+  }
+  .showcase-stage .showcase-card.is-hovered .showcase-inner {
+    transform: scale(1.06);
+  }
+  .showcase-stage[data-hovering="1"]
+    .showcase-card:not(.is-hovered)
+    .ring-media {
+    filter: grayscale(1) brightness(0.72);
+  }
+  .showcase-stage .ring-media {
+    transition: filter 450ms var(--ease-out-quart);
+  }
+  /* HUD exit — items slide away staggered as the portal opens */
+  .showcase-hud .hud-item {
+    transition:
+      opacity 480ms var(--ease-out-expo),
+      transform 480ms var(--ease-out-expo);
+  }
+  .showcase-hud[data-exit="1"] .hud-item {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .showcase-hud .hud-item:nth-child(2) {
+    transition-delay: 70ms;
+  }
+  .showcase-hud .hud-item:nth-child(3) {
+    transition-delay: 140ms;
+  }
+
+  /* ── Motion utilities ─────────────────────────────────────────────
+     Entrances: ease-out, 150–250ms. Exits: same curve, ~25% faster.
+     Only opacity / scale / translate are animated (GPU-safe). */
+
+  .animate-overlay-in {
+    animation: overlay-in 150ms ease-out both;
+  }
+  .animate-overlay-out {
+    animation: overlay-out 120ms ease-out both;
+  }
+  .animate-dialog-in {
+    animation: dialog-in 200ms var(--ease-out-quart) both;
+  }
+  .animate-dialog-out {
+    animation: dialog-out 150ms ease-out both;
+  }
+  .animate-pop-in {
+    animation: pop-in 150ms var(--ease-out-quart) both;
+  }
+  .animate-pop-out {
+    animation: pop-out 100ms ease-out both;
+  }
+  .animate-page-in {
+    animation: page-in 180ms var(--ease-out-quart) both;
+  }
+  .animate-bar-grow {
+    animation: bar-grow 400ms var(--ease-out-quart) both;
+  }
+
+  /* Card lift — desktop pointers only (touch taps trigger false hovers). */
+  @media (hover: hover) and (pointer: fine) {
+    .lift {
+      transition:
+        box-shadow 200ms var(--ease-out-quart),
+        translate 200ms var(--ease-out-quart);
+    }
+    .lift:hover {
+      translate: 0 -2px;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+    }
+    .dark .lift:hover {
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+    }
+  }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes overlay-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes dialog-in {
+  from { opacity: 0; scale: 0.96; translate: 0 4px; }
+  to { opacity: 1; scale: 1; translate: 0 0; }
+}
+@keyframes dialog-out {
+  from { opacity: 1; scale: 1; }
+  to { opacity: 0; scale: 0.97; }
+}
+@keyframes pop-in {
+  from { opacity: 0; scale: 0.96; }
+  to { opacity: 1; scale: 1; }
+}
+@keyframes pop-out {
+  from { opacity: 1; scale: 1; }
+  to { opacity: 0; scale: 0.97; }
+}
+@keyframes page-in {
+  from { opacity: 0; translate: 0 6px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes bar-grow {
+  from { transform: scaleY(0); }
+  /* no `to` — grows into the element's own scaleY(ratio) */
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Accessibility: honour the system reduced-motion preference everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
